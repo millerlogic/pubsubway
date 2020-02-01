@@ -149,18 +149,6 @@ func TestPubSubRace(t *testing.T) {
 
 	wg := &sync.WaitGroup{}
 
-	/*// Open a misbehaving subscriber.
-	c, _, err := newTestSubscribeWS(wsURL)
-	if err != nil {
-		t.Fatal(err)
-	}
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		defer c.Close(websocket.StatusNormalClosure, "rage quit")
-		time.Sleep(200 * time.Millisecond)
-	}() //*/
-
 	for n := 0; n < 10; n++ {
 		wg.Add(1)
 		go func(n int) {
