@@ -17,7 +17,6 @@ type PubSub struct {
 }
 
 // NewPubSub creates a new PubSub.
-// buffer is how many published messages can be buffered before blocking.
 func NewPubSub() *PubSub {
 	return &PubSub{}
 }
@@ -128,6 +127,7 @@ func (sub *subscriber) Close() error {
 	return nil
 }
 
+// buffer is how many published messages can be buffered before blocking.
 func newSubscriber(buffer int) *subscriber {
 	return &subscriber{
 		ch:   make(chan string, buffer),
