@@ -67,6 +67,7 @@ func (ps *PubSub) Subscribe(w http.ResponseWriter, r *http.Request) {
 	sub := newSubscriber(32) // TODO: decide on buffer size
 	defer sub.Close()
 	ps.addSubscriber(sub)
+	defer ps.removeSubscriber(sub)
 
 loop:
 	for {
