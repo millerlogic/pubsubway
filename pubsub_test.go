@@ -115,27 +115,6 @@ func TestPubSub(t *testing.T) {
 
 }
 
-func newTestHTTP(t *testing.T, ps *PubSub) (*http.Server, string, error) {
-	// Using actual server get to the websocket:
-	l, err := net.Listen("tcp", "localhost:0")
-	if err != nil {
-		return nil, "", err
-	}
-	mux := &http.ServeMux{}
-	mux.HandleFunc("/publish", ps.Publish)
-	mux.HandleFunc("/subscribe", ps.Subscribe)
-	srv := &http.Server{
-		Handler: mux,
-	}
-	go func() {
-		err := srv.Serve(l)
-		if err != http.ErrServerClosed {
-			t.Fatalf("failed to listen and serve: %v", err)
-		}
-	}()
-	return srv, "ws://" + l.Addr().String(), nil
-}
-
 // Run with -race
 func TestPubSubRace(t *testing.T) {
 	ps := NewPubSub()
@@ -166,6 +145,27 @@ func TestPubSubRace(t *testing.T) {
 	}
 
 	wg.Wait()
+}
+
+func newTestHTTP(t *testing.T, ps *PubSub) (*http.Server, string, error) {
+	// Using actual server get to the websocket:
+	l, err := net.Listen("tcp", "localhost:0")
+	if err != nil {
+		return nil, "", err
+	}
+	mux := &http.ServeMux{}
+	mux.HandleFunc("/publish", ps.Publish)
+	mux.HandleFunc("/subscribe", ps.Subscribe)
+	srv := &http.Server{
+		Handler: mux,
+	}
+	go func() {
+		err := srv.Serve(l)
+		if err != http.ErrServerClosed {
+			t.Fatalf("failed to listen and serve: %v", err)
+		}
+	}()
+	return srv, "ws://" + l.Addr().String(), nil
 }
 
 func newTestSubscribeWS(wsURL string) (*websocket.Conn, *http.Response, error) {
